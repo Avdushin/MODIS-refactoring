@@ -7,13 +7,20 @@ import (
 	"github.com/avdushin/rgoauth/vars"
 )
 
-// @ Запуск Dev сервера по адресу http://localhost:4000
-func StartServer(port string) {
-	logger.INFO("Сервер запущен по адрессу", vars.DBHost, port)
-	logger.FATAL(http.ListenAndServe(port, vars.CorsHandler))
+// @ Функци StartServer
+// ? Запускает Dev сервер по адресу http://localhost:4000
+func StartServer(port string) error {
+	logger.INFO("Сервер запущен по адресу", vars.DBHost, port)
+	err := http.ListenAndServe(port, vars.CorsHandler)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func StartProdServer(port, cert, key string) {
+// @ Функци StartProdServer
+// ? Запускает Production сервер по адресу https://localhost:4000
+func StartProdServer(port, cert, key string) error {
 	logger.INFO("Сервер запущен по адрессу", vars.DBHost, port)
 	//@ Запуск сервера с поддержкой SSL (HTTPS) соединения (Production mode)
 	/* Атрибуты:
@@ -21,5 +28,9 @@ func StartProdServer(port, cert, key string) {
 	*  2. SSL сертификат, выданный хостингом
 	*  3. SSL ключ сертификата, выданный хостингом
 	 */
-	logger.FATAL(http.ListenAndServeTLS(vars.PORT, vars.Cert, vars.Key, vars.CorsHandler))
+	err := http.ListenAndServeTLS(vars.PORT, vars.Cert, vars.Key, vars.CorsHandler)
+	if err != nil {
+		return err
+	}
+	return nil
 }
